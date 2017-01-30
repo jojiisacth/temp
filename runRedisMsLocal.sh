@@ -8,21 +8,21 @@ cd ..
 
 export KUBECONFIG="$(pwd)/cluster/coreos/kubeconfig"
 clear
-echo 'Waiting for kubernets to ready '
+echo '$(date)Waiting for kubernets to ready '
 echo '------------------------------:' 
 while [ $(./cluster/kubectl get no | grep -c Ready) -lt 1 ]
 do
-    echo "Please wait"
+    echo "$(date) Please wait"
     sleep 10
 done
 
-echo 'Kubernets is ready the following are the nodes'
+echo '$(date)Kubernets is ready the following are the nodes'
 echo '------------------------------:' 
 ./cluster/kubectl get no
 echo ''
 
 
-echo 'Creating redis Master slave nodes'
+echo '$(date) Creating redis Master slave nodes'
 echo '------------------------------:' 
     ./cluster/kubectl create -f ./redis/masterRs.yaml
     ./cluster/kubectl create -f ./redis/masterSrv.yaml
@@ -32,12 +32,12 @@ echo ''
 
 while [ $(./cluster/kubectl get po | grep -c Running) -lt 3 ]
 do
-    echo "Please wait  a bit for redis master slave set up is ready "
+    echo "$(date) Please wait  a bit for redis master slave set up is ready "
     sleep 10
 done
 
 
-echo 'Reading pods'
+echo '$(date) Reading pods'
 echo '------------------------------:'
 ./cluster/kubectl get po
 echo ''
@@ -53,18 +53,18 @@ echo 'Redis Slave is  : '$slaveNode
 
 echo ''
 echo '------------------------------:'
-echo 'Inserting data to redis master'
+echo '$(date) Inserting data to redis master'
 export data='Redisdata'
 export setresut=`./cluster/kubectl exec $Mater   redis-cli set myval  $data `
-echo 'master update status: '$setresut
+echo '$(date) master update status: '$setresut
 
 echo ''
 echo '------------------------------:'
-echo 'Reading  data from  redis slave '
+echo '$(date) Reading  data from  redis slave '
 
 
 export result=`./cluster/kubectl exec $Mater   redis-cli get myval` 
-echo 'Result is:'$result 
+echo '$(date) Result is:'$result 
 
 
 
@@ -72,9 +72,9 @@ echo 'Result is:'$result
 
 if  [ $result == $data ] 
 then
-    echo 'Congrats redis set up is working :)'
+    echo '$(date) Congrats redis set up is working :)'
 else
-    echo 'sorry there is something wrong with redis set up. :( '
+    echo '$(date) sorry there is something wrong with redis set up. :( '
 fi 
 
 
