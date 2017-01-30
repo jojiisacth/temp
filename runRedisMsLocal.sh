@@ -1,4 +1,11 @@
 #!/bin/bash 
+
+cd cluster/coreos/
+vagrant up 
+
+cd .. 
+cd ..
+
 export KUBECONFIG="$(pwd)/cluster/coreos/kubeconfig"
 clear
 echo 'Waiting for kubernets to ready '
