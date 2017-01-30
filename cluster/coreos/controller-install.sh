@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-
+echo   $(date)  Starting script  >> /usr/tmp/log.log
 # List of etcd servers (http://ip:port), comma separated
 export ETCD_ENDPOINTS=
 
@@ -43,15 +43,20 @@ ENV_FILE=/run/coreos-kubernetes/options.env
 if [ "${USE_CALICO}" = "true" ]; then
     export CALICO_OPTS="--volume cni-bin,kind=host,source=/opt/cni/bin \
                         --mount volume=cni-bin,target=/opt/cni/bin"
+
+
+    echo   $(date)  Inside calico   >> /usr/tmp/log.log
 else
     export CALICO_OPTS=""
+
+    echo   $(date)  Setting calico null/empty  >> /usr/tmp/log.log
 fi
 
 # -------------
 
 function init_config {
     local REQUIRED=('ADVERTISE_IP' 'POD_NETWORK' 'ETCD_ENDPOINTS' 'SERVICE_IP_RANGE' 'K8S_SERVICE_IP' 'DNS_SERVICE_IP' 'K8S_VER' 'HYPERKUBE_IMAGE_REPO' 'USE_CALICO')
-
+     echo   $(date)  Inside init_config  >> /usr/tmp/log.log
     if [ -f $ENV_FILE ]; then
         export $(cat $ENV_FILE | xargs)
     fi
@@ -63,13 +68,17 @@ function init_config {
     for REQ in "${REQUIRED[@]}"; do
         if [ -z "$(eval echo \$$REQ)" ]; then
             echo "Missing required config value: ${REQ}"
+             echo   $(date)  Missing required config value: ${REQ} >> /usr/tmp/log.log
             exit 1
         fi
     done
+    echo   $(date)  out  init_config  >> /usr/tmp/log.log
+
 }
 
 function init_flannel {
     echo "Waiting for etcd..."
+    echo   $(date)  Inside init_flannel  >> /usr/tmp/log.log
     while true
     do
         IFS=',' read -ra ES <<< "$ETCD_ENDPOINTS"
@@ -88,14 +97,23 @@ function init_flannel {
     RES=$(curl --silent -X PUT -d "value={\"Network\":\"$POD_NETWORK\",\"Backend\":{\"Type\":\"vxlan\"}}" "$ACTIVE_ETCD/v2/keys/coreos.com/network/config?prevExist=false")
     if [ -z "$(echo $RES | grep '"action":"create"')" ] && [ -z "$(echo $RES | grep 'Key already exists')" ]; then
         echo "Unexpected error configuring flannel pod network: $RES"
+          echo   $(date)  Unexpected error configuring flannel pod network:  >> /usr/tmp/log.log
+  
     fi
+
+      echo   $(date)  out  init_flannel  >> /usr/tmp/log.log
+  
 }
 
 function init_templates {
+    echo   $(date)  In   init_templates  >> /usr/tmp/log.log
     local TEMPLATE=/etc/systemd/system/kubelet.service
     local uuid_file="/var/run/kubelet-pod.uuid"
     if [ ! -f $TEMPLATE ]; then
         echo "TEMPLATE: $TEMPLATE"
+        echo   $(date)  Inside TEMPLATE  >> /usr/tmp/log.log
+        echo   $(date)  TEMPLATE : $TEMPLATE  >> /usr/tmp/log.log
+   
         mkdir -p $(dirname $TEMPLATE)
         cat << EOF > $TEMPLATE
 [Service]
@@ -155,13 +173,22 @@ EOF
 # https://github.com/coreos/rkt/issues/2878
 exec nsenter -m -u -i -n -p -t 1 -- /usr/bin/rkt "\$@"
 EOF
+echo   $(date)  Inside TEMPLATE2  Line 176  >> /usr/tmp/log.log
+echo   $(date)  template : $TEMPLATE   >> /usr/tmp/log.log
+
+
     fi
 
 
     local TEMPLATE=/etc/systemd/system/load-rkt-stage1.service
     if [ ${CONTAINER_RUNTIME} = "rkt" ] && [ ! -f $TEMPLATE ]; then
+    echo   $(date)  CONTAINER_RUNTIME  : $CONTAINER_RUNTIME   >> /usr/tmp/log.log
+
+
         echo "TEMPLATE: $TEMPLATE"
         mkdir -p $(dirname $TEMPLATE)
+        echo   $(date)  template : $TEMPLATE   >> /usr/tmp/log.log
+
         cat << EOF > $TEMPLATE
 [Unit]
 Description=Load rkt stage1 images
@@ -200,6 +227,8 @@ EOF
 
     local TEMPLATE=/etc/kubernetes/manifests/kube-proxy.yaml
     if [ ! -f $TEMPLATE ]; then
+       echo   $(date)  creating   : $TEMPLATE   >> /usr/tmp/log.log
+
         echo "TEMPLATE: $TEMPLATE"
         mkdir -p $(dirname $TEMPLATE)
         cat << EOF > $TEMPLATE
@@ -241,6 +270,8 @@ EOF
 
     local TEMPLATE=/etc/kubernetes/manifests/kube-apiserver.yaml
     if [ ! -f $TEMPLATE ]; then
+        echo   $(date)  creating   : $TEMPLATE   >> /usr/tmp/log.log
+
         echo "TEMPLATE: $TEMPLATE"
         mkdir -p $(dirname $TEMPLATE)
         cat << EOF > $TEMPLATE
@@ -1013,17 +1044,31 @@ spec:
               value: "true"
 EOF
     fi
+
+
+
+      echo   $(date)  done creating files    >> /usr/tmp/log.log
+
 }
 
 function start_addons {
+    echo   $(date)  Inside start_addons  >> /usr/tmp/log.log
+
     echo "Waiting for Kubernetes API..."
+
     until curl --silent "http://127.0.0.1:8080/version"
     do
-        sleep 5
+        sleep 10
+         echo   $(date)  waiting for kube api  >> /usr/tmp/log.log
+
+
     done
+       echo   $(date)  Inside start_addons  >> /usr/tmp/log.log
 
     echo
     echo "K8S: DNS addon"
+     echo   $(date)  K8S: DNS addon  >> /usr/tmp/log.log
+
     curl --silent -H "Content-Type: application/yaml" -XPOST -d"$(cat /srv/kubernetes/manifests/kube-dns-de.yaml)" "http://127.0.0.1:8080/apis/extensions/v1beta1/namespaces/kube-system/deployments" > /dev/null
     curl --silent -H "Content-Type: application/yaml" -XPOST -d"$(cat /srv/kubernetes/manifests/kube-dns-svc.yaml)" "http://127.0.0.1:8080/api/v1/namespaces/kube-system/services" > /dev/null
     curl --silent -H "Content-Type: application/yaml" -XPOST -d"$(cat /srv/kubernetes/manifests/kube-dns-autoscaler-de.yaml)" "http://127.0.0.1:8080/apis/extensions/v1beta1/namespaces/kube-system/deployments" > /dev/null
@@ -1033,10 +1078,16 @@ function start_addons {
     echo "K8S: Dashboard addon"
     curl --silent -H "Content-Type: application/yaml" -XPOST -d"$(cat /srv/kubernetes/manifests/kube-dashboard-de.yaml)" "http://127.0.0.1:8080/apis/extensions/v1beta1/namespaces/kube-system/deployments" > /dev/null
     curl --silent -H "Content-Type: application/yaml" -XPOST -d"$(cat /srv/kubernetes/manifests/kube-dashboard-svc.yaml)" "http://127.0.0.1:8080/api/v1/namespaces/kube-system/services" > /dev/null
+    
+    echo   $(date)  end start_addons  >> /usr/tmp/log.log
+
+
 }
 
 function start_calico {
     echo "Waiting for Kubernetes API..."
+    echo   $(date)  inside start_calico  >> /usr/tmp/log.log
+
     # wait for the API
     until curl --silent "http://127.0.0.1:8080/version/"
     do
@@ -1045,7 +1096,11 @@ function start_calico {
     echo "Deploying Calico"
     # Deploy Calico
     #TODO: change to rkt once this is resolved (https://github.com/coreos/rkt/issues/3181)
+      echo   $(date)  Deploying calico  >> /usr/tmp/log.log
+
     docker run --rm --net=host -v /srv/kubernetes/manifests:/host/manifests $HYPERKUBE_IMAGE_REPO:$K8S_VER /hyperkube kubectl apply -f /host/manifests/calico.yaml
+    echo   $(date)  end start_calico  >> /usr/tmp/log.log
+
 }
 
 init_config
@@ -1074,3 +1129,6 @@ fi
 
 start_addons
 echo "DONE"
+
+  echo   $(date)  complete job   >> /usr/tmp/log.log
+

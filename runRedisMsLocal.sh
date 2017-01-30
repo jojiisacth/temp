@@ -8,27 +8,27 @@ cd ..
 
 export KUBECONFIG="$(pwd)/cluster/coreos/kubeconfig"
 clear
-echo '$(date)Waiting for kubernets to ready '
-echo '------------------------------:' 
+echo "$(date)Waiting for kubernets to ready "
+echo "------------------------------:" 
 while [ $(./cluster/kubectl get no | grep -c Ready) -lt 1 ]
 do
     echo "$(date) Please wait"
     sleep 10
 done
 
-echo '$(date)Kubernets is ready the following are the nodes'
-echo '------------------------------:' 
+echo "$(date)Kubernets is ready the following are the nodes"
+echo "------------------------------:" 
 ./cluster/kubectl get no
-echo ''
+echo ""
 
 
-echo '$(date) Creating redis Master slave nodes'
-echo '------------------------------:' 
+echo "$(date) Creating redis Master slave nodes"
+echo "------------------------------:" 
     ./cluster/kubectl create -f ./redis/masterRs.yaml
     ./cluster/kubectl create -f ./redis/masterSrv.yaml
-    sleep 20
+    sleep 5
     ./cluster/kubectl create -f ./redis/slaveRs.yaml
-echo ''
+echo ""
 
 
 while [ $(./cluster/kubectl get po | grep -c Running) -lt 3 ]
@@ -38,10 +38,10 @@ do
 done
 
 
-echo '$(date) Reading pods'
-echo '------------------------------:'
+echo "$(date) Reading pods"
+echo "------------------------------:"
 ./cluster/kubectl get po
-echo ''
+echo ""
 
 
 
@@ -54,18 +54,18 @@ echo 'Redis Slave is  : '$slaveNode
 
 echo ''
 echo '------------------------------:'
-echo '$(date) Inserting data to redis master'
+echo "$(date) Inserting data to redis master"
 export data='Redisdata'
 export setresut=`./cluster/kubectl exec $Mater   redis-cli set myval  $data `
-echo '$(date) master update status: '$setresut
+echo "$(date) master update status: "$setresut
 
 echo ''
 echo '------------------------------:'
-echo '$(date) Reading  data from  redis slave '
+echo "$(date) Reading  data from  redis slave "
 
 
 export result=`./cluster/kubectl exec $Mater   redis-cli get myval` 
-echo '$(date) Result is:'$result 
+echo "$(date) Result is:"$result 
 
 
 
@@ -73,9 +73,9 @@ echo '$(date) Result is:'$result
 
 if  [ $result == $data ] 
 then
-    echo '$(date) Congrats redis set up is working :)'
+    echo "$(date) Congrats redis set up is working :)"
 else
-    echo '$(date) sorry there is something wrong with redis set up. :( '
+    echo "$(date) sorry there is something wrong with redis set up. :( "
 fi 
 
 
