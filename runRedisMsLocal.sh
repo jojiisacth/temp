@@ -18,7 +18,7 @@ done
 
 echo 'Kubernets is ready the following are the nodes'
 echo '------------------------------:' 
-kubectl get no
+./cluster/kubectl get no
 echo ''
 
 
