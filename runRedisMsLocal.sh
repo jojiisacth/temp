@@ -26,6 +26,7 @@ echo 'Creating redis Master slave nodes'
 echo '------------------------------:' 
     ./cluster/kubectl create -f ./redis/masterRs.yaml
     ./cluster/kubectl create -f ./redis/masterSrv.yaml
+    sleep 20
     ./cluster/kubectl create -f ./redis/slaveRs.yaml
 echo ''
 
