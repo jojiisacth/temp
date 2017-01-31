@@ -13,7 +13,7 @@ echo "------------------------------:"
 while [ $(./cluster/kubectl get no | grep -c Ready) -lt 1 ]
 do
     echo "$(date) Please wait"
-    sleep 10
+    sleep 30
 done
 
 echo "$(date)Kubernets is ready the following are the nodes"
@@ -34,7 +34,7 @@ echo ""
 while [ $(./cluster/kubectl get po | grep -c Running) -lt 3 ]
 do
     echo "$(date) Please wait  a bit for redis master slave set up is ready "
-    sleep 10
+    sleep 20
 done
 
 
