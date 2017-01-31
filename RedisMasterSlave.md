@@ -47,5 +47,6 @@ This is an experimental master slave set up of redis on kubernets
       Tue Jan 31 12:36:47 IST 2017 Congrats redis set up is working :)
 ```
 		
- 
+#### Building docker images (Optional)  
+	we were using the prebuilt  docker images for this exeriment, if you want to  build it self please follow the steps  https://github.dev.global.tesco.org/nk68/k8/blob/master/redis/ms/README.MD 
 #### This complete this experiment :)
