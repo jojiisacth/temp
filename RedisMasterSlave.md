@@ -48,6 +48,7 @@ This is an experimental master slave set up of redis on kubernets
 ```
 		
 #### Building docker images (Optional)  
-we were using the prebuilt  docker images for this exeriment, if you want to  build it self please follow the steps
-[read](./redis/ms/README.MD)
+we were using the prebuilt  docker images for this exeriment, if you want to  build it self please follow the
+[steps in this document](./redis/ms/README.MD)
+
 #### This complete this experiment :)
