@@ -23,6 +23,7 @@ do
    echo "$(date)   :   Please wait, we are retrying "
     sleep 30
 done
+
 clear
 
 echo "$(date)   :   Kubernets is ready the following are the nodes"
