@@ -1,4 +1,4 @@
- ##  Kubernets cluster on  Vagrant/virtual box 
+##  Kubernets cluster on  Vagrant/virtual box 
  we creates  a Kubernets cluster on 3 virtual machines provisioned by vagrant & virtual box. The OS used is Core OS   . 
  These achines are used for 
     1. For hosting etcd  ( e1)
