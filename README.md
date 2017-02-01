@@ -33,4 +33,4 @@ Please use the following scripts to  create the redis  deployment
             cd redis/
             ./deployMasterSlave.sh
 
-Please follow the [document](README.MD) for details.
+Please follow the [document](redis/README.MD) for details.
