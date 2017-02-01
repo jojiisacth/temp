@@ -20,5 +20,16 @@ This repository is for experimenting with kubernets cluster  and application tha
 
 
 ## Redis 
+
 ### 1. Redis master slave  
- Please follow the [instructions](RedisMasterSlave.md) to run a redis master slave.
+Here we create a redis master and 2 slave instances. For that we creates 
+    1. Replica set to run a container with redis running as master mode
+    2. A service which will expose the redis master  so that redis slaves and other clients can acces it
+    3. Resplica set to run  two container with redis running as slave to the above master. 
+    
+Please use the following scripts to  create the redis  deployment  
+            
+            cd redis/
+            ./deployMasterSlave.sh
+
+Please follow the [document](RedisMasterSlave.md) for details.
