@@ -32,3 +32,12 @@ Please use the script below to  access a pod in the cluster
              ./../kubectl  exec -it  <podname>   bash
             # To see the log of an instance  
              ./../kubectl  logs   <podname> 
+
+### Accesing the Kubernets Dashboard  
+Please use the script below to  access a pod in the cluster    
+      
+            cd cluster/coreos
+            export KUBECONFIG="$(pwd)/kubeconfig"
+             ./../kubectl  proxy 
+
+then open the [link](http://127.0.0.1:8001/ui)  to see Kubernets Dashboard  
