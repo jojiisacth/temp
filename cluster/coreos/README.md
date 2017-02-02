@@ -40,4 +40,4 @@ Please use the script below to  access a pod in the cluster
             export KUBECONFIG="$(pwd)/kubeconfig"
              ./../kubectl  proxy 
 
-then open the [link](http://127.0.0.1:8001/ui)  to see Kubernets Dashboard  
+ Then open the [link](http://127.0.0.1:8001/ui)  to see Kubernets Dashboard  
