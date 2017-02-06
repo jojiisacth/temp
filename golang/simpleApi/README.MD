@@ -17,6 +17,8 @@
     docker push jojiisacth/mygolangapi
     Note : if you getting accees denied error  log into docker hub via command 
             docker login  
+
+
 ### 2. How to deploy into kubernets 
  1. create a replica set of the above image by running below script  
             kubectl create -f kub/apiRs.yaml
