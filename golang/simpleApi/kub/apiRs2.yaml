@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: ReplicaSet
+metadata:
+  name: "redismaster"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: redis
+        type: "master"
+    spec:
+      containers:
+        - name: redis
+          image: "jojiisacth/mygoapi"
+       
+
+          ports:
+            - name: redis
+              containerPort: 8081
+              protocol: "TCP"
+        
+         
