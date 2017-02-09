@@ -32,11 +32,16 @@ Run the script in terminal
  4. If yu are running the cluster on on cloud provider use the following script to  expose it on a loadbalancer 
            kubectl create -f kub/apiCloudsrv.yaml
 5. To see the api working  
+  
+
+
     export server=`kubectl  get po | sed -n 2p  | awk -F " " '{print $1}'`
+
     kubectl port-forward $server  8081:8081   &  
     curl http://localhost:8081
     curl http://localhost:8081/articles
 
+You will out put as follows
     ````
         Jojis-MacBook-Pro:thinImage joji$ Forwarding from 127.0.0.1:8081 -> 8081
                 Forwarding from [::1]:8081 -> 8081
@@ -54,4 +59,4 @@ Run the script in terminal
 ```
 
 
- 
+@END
