@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: ReplicaSet
+metadata:
+  name: "goapi"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: web
+        type: "api"
+    spec:
+      containers:
+        - name: goapi
+          image: "jojiisacth/mythingolangapi"
+       
+
+          ports:
+            - name: web
+              containerPort: 8081
+              protocol: "TCP"
+        
+         
