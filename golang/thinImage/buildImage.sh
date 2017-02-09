@@ -17,3 +17,10 @@ echo running conianer
 docker run   -v $PWD:/app   -w /app  -p  8083:8081  alpine:3.5  ./myapp &
 sleep 5
 curl http://localhost:8083
+
+echo building the docker images 
+ docker build -t mythingolangapi .
+#3. Tag and upload the image to docker hub      
+echo building the docker images  
+    docker tag  mythingolangapi jojiisacth/mythingolangapi
+    docker push jojiisacth/mythingolangapi
