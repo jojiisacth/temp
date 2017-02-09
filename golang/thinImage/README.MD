@@ -42,10 +42,12 @@ Run the script in terminal
     curl http://localhost:8081/articles
 
 You will out put as follows
+
+
+
     ````
                 Jojis-MacBook-Pro:thinImage joji$ Forwarding from 127.0.0.1:8081 -> 8081
                 Forwarding from [::1]:8081 -> 8081
-                
                 Jojis-MacBook-Pro:thinImage joji$ curl http://localhost:8081
                 Handling connection for 8081
                 wellcome to home page: 
@@ -58,5 +60,4 @@ You will out put as follows
                 Jojis-MacBook-Pro:thinImage joji$ 
 ```
 
-
-@END
+####@END
