@@ -21,6 +21,6 @@ curl http://localhost:8083
 echo building the docker images 
  docker build -t mythingolangapi .
 #3. Tag and upload the image to docker hub      
-echo building the docker images  
-    docker tag  mythingolangapi jojiisacth/mythingolangapi
-    docker push jojiisacth/mythingolangapi
+echo Built  the docker image  
+    #docker tag  mythingolangapi jojiisacth/mythingolangapi
+    #docker push jojiisacth/mythingolangapi
